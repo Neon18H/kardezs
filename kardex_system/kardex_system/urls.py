@@ -16,7 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from kardex import views as kardex_views
+from django.contrib.auth.decorators import user_passes_test
+from usuarios import views as usuario_views
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('registro/', usuario_views.registro_view, name='registro'),
+    path('login/', usuario_views.login_view, name='login'),
+    path('logout/', usuario_views.logout_view, name='logout'),
 ]
