@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+
+<h1>Base Template</h1>
+<p>This is the base template for the Kardex system.</p>
+<p>It includes the basic structure and layout that other templates will extend.</p>
+
+{% block content %}
+    <p>This is the content block where child templates can insert their own content.</p>
+{% endblock %}
+
+{% block scripts %}
+    <script src="path/to/your/script.js"></script>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="path/to/your/styles.css">
+{% endblock %}
