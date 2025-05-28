@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Panel de Administración - Tarjetas Kardex</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Resumen General</h4>
+        </div>
+        <div class="card-body">
+            <h5>Total acumulado por todos los usuarios: ${{ total_general|intcomma }}</h5>
+            <p class="mb-0">Cantidad de usuarios registrados: {{ usuarios.count }}</p>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nombre Completo</th>
+                    <th>Email</th>
+                    <th>Saldo Kardex</th>
+                    <th>Último Login</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.get_full_name|default:"-" }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td class="fw-bold">${{ usuario.saldo|intcomma }}</td>
+                    <td>{{ usuario.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</td>
+                    <td>
+                        <a href="{% url 'kardex' %}?user_id={{ usuario.id }}" 
+                           class="btn btn-sm btn-info" 
+                           title="Ver tarjeta">
+                            <i class="bi bi-eye-fill"></i> Ver
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
