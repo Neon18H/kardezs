@@ -19,9 +19,16 @@ from django.urls import path
 from kardex import views as kardex_views
 from django.contrib.auth.decorators import user_passes_test
 from usuarios import views as usuario_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('registro/', usuario_views.registro_view, name='registro'),
     path('login/', usuario_views.login_view, name='login'),
     path('logout/', usuario_views.logout_view, name='logout'),
+    path('', kardex_views.kardex_view, name='kardex'),
+    path('agregar-compra/', kardex_views.agregar_compra, name='agregar_compra'),
+    path('admin/kardex/', 
+         user_passes_test(lambda u: u.is_superuser)(kardex_views.admin_kardex_view), 
+         name='admin_kardex'),
+    path('admin/kardex/', user_passes_test(lambda u: u.is_superuser)(kardex_views.admin_kardex_view), name='admin_kardex'),
 ]
