@@ -18,6 +18,6 @@ class Compra(models.Model):
     class Meta:
         ordering = ['-fecha']
 
-    def save(self, args, **kwargs):
-        super().save(args, **kwargs)
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         self.usuario.actualizar_saldo()
