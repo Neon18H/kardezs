@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="kardex-card">
+    <div class="kardex-header">
+        <h2>Tarjeta Kardex</h2>
+        <h3>
+            {{ usuario_actual.username }}
+            {% if request.user.is_superuser and request.user != usuario_actual %}
+            <span class="badge bg-warning text-dark">Vista administrativa</span>
+            {% endif %}
+        </h3>
+        
+        {% if request.user.is_superuser %}
+        <div class="admin-actions mt-2">
+            <a href="{% url 'admin_kardex' %}" class="btn btn-sm btn-secondary">
+                <i class="bi bi-people-fill"></i> Ver todos los usuarios
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="kardex-body">
+        <div class="saldo-display">
+            ${{ usuario_actual.saldo|intcomma }}
+            {% if request.user.is_superuser and request.user != usuario_actual %}
+            <div class="text-muted small mt-1">
+                Usuario registrado el: {{ usuario_actual.date_joined|date:"d/m/Y" }}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="d-flex justify-content-between mb-4">
+            <h4>Historial de compras</h4>
+            <div>
+                {% if request.user.is_superuser %}
+                <a href="{% url 'agregar_compra' %}?user_id={{ usuario_actual.id }}" 
+                   class="btn btn-sm btn-outline-primary me-2">
+                   + Agregar compra para este usuario
+                </a>
+                {% endif %}
+                <a href="{% url 'agregar_compra' %}" class="btn btn-sm btn-primary">
+                    + Agregar mi compra
+                </a>
+            </div>
+        </div>
+        
+        {% if compras %}
+            {% for compra in compras %}
+                <div class="compra-item">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ compra.get_tipo_movimiento_display }}</strong>
+                        <span class="text-success">${{ compra.monto|intcomma }}</span>
+                    </div>
+                    <div>{{ compra.descripcion }}</div>
+                    <div class="text-muted small">
+                        {{ compra.tienda }} - {{ compra.fecha|date:"d/m/Y H:i" }}
+                        {% if request.user.is_superuser %}
+                        <span class="ms-2">
+                            <a href="#" class="text-danger" title="Eliminar compra">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">No hay compras registradas aún.</div>
+        {% endif %}
+        
+        {% if request.user.is_superuser %}
+        <div class="admin-section mt-5 p-3 bg-light rounded">
+            <h5 class="mb-3"><i class="bi bi-graph-up"></i> Estadísticas del usuario</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Total comprado</h6>
+                            <p class="card-text h4">${{ usuario_actual.saldo|intcomma }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Compras registradas</h6>
+                            <p class="card-text h4">{{ compras.count }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Última compra</h6>
+                            <p class="card-text">
+                                {% if compras.first %}
+                                {{ compras.first.fecha|date:"d/m/Y" }}
+                                {% else %}
+                                Sin registros
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .admin-actions {
+        text-align: center;
+    }
+    .admin-section {
+        border-left: 4px solid #6c757d;
+    }
+    .compra-item .bi-trash {
+        opacity: 0.5;
+        transition: opacity 0.3s;
+    }
+    .compra-item .bi-trash:hover {
+        opacity: 1;
+    }
+</style>
+{% endblock %}
